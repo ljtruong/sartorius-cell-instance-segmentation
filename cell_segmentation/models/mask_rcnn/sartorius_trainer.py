@@ -7,10 +7,18 @@ from detectron2.data import (
 
 
 class TransformsMapper:
+    """
+    This implements a transformation class for feature engineering or data augmentation of the dataset.
+    """
+
     pass
 
 
 class SartoriusTrainer(DefaultTrainer):
+    """
+    This implements a SartorusTrainer for cell segmentation.
+    """
+
     pass
     # TODO add custom transforms
     # @classmethod
