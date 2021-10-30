@@ -9,6 +9,7 @@ setup(
     license="MIT",
     install_requires=[
         "black",
+        "click==8.0.3",
         "numpy==1.21.3",
         "pandas==1.3.4",
         "torch@https://download.pytorch.org/whl/cu113/torch-1.10.0%2Bcu113-cp39-cp39-linux_x86_64.whl",
