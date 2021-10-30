@@ -93,6 +93,8 @@ class Satorus2COCO:
 
         Run-length encoding(RLE) is a form of lossless data compression.
 
+        source: https://www.kaggle.com/ammarnassanalhajali/sartorius-segmentation-detectron2-training#Loading-Dataset
+
         Parameters:
             ann (List[int]): RLE encoded pixels
             image_height (int): height of image
@@ -112,6 +114,8 @@ class Satorus2COCO:
     def decode_rle(self, mask_rle: np.ndarray):
         """
         Convert RLE encoded mask to numpy array and extract bounding box of mask.
+
+        source: https://www.kaggle.com/ammarnassanalhajali/sartorius-segmentation-detectron2-training#Loading-Dataset
 
         Parameters:
             mask_rle (List[int]): RLE encoded pixels
