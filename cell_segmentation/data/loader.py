@@ -38,9 +38,7 @@ class Loader:
         Returns:
             pd.DataFrame: The preprocessed dataframe.
         """
-        ROOT = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data"
-        )
+        ROOT = os.path.join(os.path.dirname(__file__), "..", "..", "data")
         df["image_path"] = ROOT + "/train/" + df["id"] + ".png"
         return df
 
@@ -48,7 +46,7 @@ class Loader:
         self, annotations: pd.DataFrame
     ) -> Segmentation:
         """
-        Build segmentation annotations from a dataframe in Segmentation data model.
+        Build segmentation annotations from a dataframe into Segmentation data model.
 
         Parameters:
             annotations (pd.DataFrame): The dataframe containing the annotations.
@@ -67,7 +65,7 @@ class Loader:
         self, df: pd.DataFrame
     ) -> List[MicroscopyImage]:
         """
-        Build microscopy images from a dataframe in MicroscopyImage data model.
+        Build microscopy images from a dataframe into MicroscopyImage data model.
 
         Parameters:
             df (pd.DataFrame): The dataframe containing the microscopy image annotations.
