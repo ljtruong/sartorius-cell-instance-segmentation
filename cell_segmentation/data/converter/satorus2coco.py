@@ -19,7 +19,7 @@ class Satorus2COCO:
 
     def __init__(self):
         self._string2int = self.load_class_mapping(
-            "models/mask_rcnn/configs/class_mapping.json"
+            "models/mask_rcnn/default_configs/class_mapping.json"
         )
 
     def load_class_mapping(self, filepath: str) -> Dict:
