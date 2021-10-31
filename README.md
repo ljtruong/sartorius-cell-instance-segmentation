@@ -30,10 +30,6 @@ kaggle competitions download -c sartorius-cell-instance-segmentation
 python experiments/mask_rcnn/train.py
 ```
 
-thoughts on how to approach:
-- irregular and concave morphology associated with them - predict this concave feature rather than just detecting it.
-
-
 # TODO Checklist
 - [x] Structure dataset
 - [ ] Data exploration
