@@ -1,5 +1,6 @@
 import os
-from detectron2.config import get_cfg
+
+from cell_segmentation.models.mask_rcnn.default_configs.config import get_cfg
 
 
 def load_config(config):

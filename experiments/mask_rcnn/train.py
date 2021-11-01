@@ -10,15 +10,18 @@ from cell_segmentation.models.mask_rcnn.sartorius_trainer import SartoriusTraine
 from cell_segmentation.utils.configs import load_config
 
 
-def load_dataset():
+def load_dataset(cfg):
     data_loader = Loader()
     satorus_converter = Satorus2COCO()
-    df = data_loader.load_static_dataset(filepath="data/train.csv")
+    df = data_loader.load_static_dataset(filepath=cfg.DATASETS.TRAIN_STATIC_FILE)
     df = data_loader.preprocess_static_dataset(df)
 
-    df = df[:1000]  # Temporary
+    if cfg.DATASETS.TRAIN_STATIC_FILE_ROWS:
+        df = df[: cfg.DATASETS.TRAIN_STATIC_FILE_ROWS]  # Debug purposes
 
-    train_df, val_df = Datasets.generate_examples(df, train_split=0.8, test_split=0.2)
+    train_df, val_df = Datasets.generate_examples(
+        df, train_split=cfg.DATASETS.TRAIN_SPLIT, test_split=cfg.DATASETS.TEST_SPLIT
+    )
     train_dataset = data_loader.build_microscopyimage_from_dataframe(train_df)
     validation_dataset = data_loader.build_microscopyimage_from_dataframe(val_df)
 
@@ -26,12 +29,12 @@ def load_dataset():
     satorus_converter.register_instances("validation", validation_dataset)
 
 
-def main(config: str):
+def main(config: str, resume: bool):
 
     cfg = load_config(config)
-    load_dataset()
+    load_dataset(cfg)
     trainer = SartoriusTrainer(cfg)
-    trainer.resume_or_load(resume=False)
+    trainer.resume_or_load(resume=resume)
     trainer.train()
 
 
@@ -41,8 +44,13 @@ def main(config: str):
     type=str,
     default="cell_segmentation/models/mask_rcnn/default_configs/mask_rcnn_R_50_FPN_3x.yaml",
 )
-def train(config: str):
-    main(config)
+@click.option(
+    "--resume",
+    type=bool,
+    default=False,
+)
+def train(config: str, resume: bool):
+    main(config, resume)
 
 
 if __name__ == "__main__":
