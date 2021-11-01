@@ -19,7 +19,10 @@ def load_dataset(cfg):
         df = df[: cfg.DATASETS.TRAIN_STATIC_FILE_ROWS]  # Debug purposes
 
     train_df, val_df = Datasets.generate_examples(
-        df, train_split=cfg.DATASETS.TRAIN_SPLIT, test_split=cfg.DATASETS.TEST_SPLIT
+        df,
+        seed=cfg.SEED,
+        train_split=cfg.DATASETS.TRAIN_SPLIT,
+        test_split=cfg.DATASETS.TEST_SPLIT,
     )
     train_dataset = data_loader.build_microscopyimage_from_dataframe(train_df)
     validation_dataset = data_loader.build_microscopyimage_from_dataframe(val_df)
