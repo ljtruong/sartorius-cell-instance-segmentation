@@ -34,9 +34,11 @@ python experiments/mask_rcnn/train.py
 - [x] Structure dataset
 - [ ] Data exploration
 - [ ] Baseline results on one epoch
+- [x] Custom configuration
 - [x] Training
 - [x] Evaluation
 - [ ] Submission output
 - [ ] Feature Engineering
 - [ ] Augmentation
+- [ ] Cross Validation
 - [ ] GCP training
