@@ -12,7 +12,7 @@ from skimage import measure
 from cell_segmentation.data.models import MicroscopyImage
 
 
-class Satorus2COCO:
+class Satorius2COCO:
     """
     This implements Satorus convertor class to transform Satorus dataset to COCO format.
     """

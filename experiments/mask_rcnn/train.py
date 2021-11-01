@@ -3,7 +3,7 @@ import os
 from detectron2.config import get_cfg
 import click
 
-from cell_segmentation.data.converter.satorus2coco import Satorus2COCO
+from cell_segmentation.data.converter.satorius2coco import Satorius2COCO
 from cell_segmentation.data.datasets import Datasets
 from cell_segmentation.data.loader import Loader
 from cell_segmentation.models.mask_rcnn.sartorius_trainer import SartoriusTrainer
@@ -12,7 +12,7 @@ from cell_segmentation.utils.configs import load_config
 
 def load_dataset(cfg):
     data_loader = Loader()
-    satorus_converter = Satorus2COCO()
+    satorus_converter = Satorius2COCO()
     df = data_loader.load_static_dataset(filepath=cfg.DATASETS.TRAIN_STATIC_FILE)
     df = data_loader.preprocess_static_dataset(df)
 
