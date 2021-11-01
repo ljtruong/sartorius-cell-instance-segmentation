@@ -8,6 +8,7 @@ from cell_segmentation.data.datasets import Datasets
 from cell_segmentation.data.loader import Loader
 from cell_segmentation.models.mask_rcnn.sartorius_trainer import SartoriusTrainer
 from cell_segmentation.utils.configs import load_config
+from detectron2.utils.logger import setup_logger
 
 
 def load_dataset(cfg):
@@ -33,7 +34,7 @@ def load_dataset(cfg):
 
 
 def main(config: str, resume: bool):
-
+    setup_logger()
     cfg = load_config(config)
     load_dataset(cfg)
     trainer = SartoriusTrainer(cfg)
