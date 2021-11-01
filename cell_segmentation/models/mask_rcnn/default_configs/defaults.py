@@ -94,6 +94,7 @@ _C.INPUT.MASK_FORMAT = "polygon"  # alternative: "bitmask"
 _C.DATASETS = CN()
 # List of the dataset names for training. Must be registered in DatasetCatalog
 # Samples from these datasets will be merged and used as one dataset.
+_C.DATASETS.DATA_DIR = "data"
 _C.DATASETS.TRAIN = ()
 _C.DATASETS.TRAIN_STATIC_FILE = ""
 _C.DATASETS.TRAIN_STATIC_FILE_ROWS = None

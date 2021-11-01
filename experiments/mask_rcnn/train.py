@@ -11,7 +11,7 @@ from cell_segmentation.utils.configs import load_config
 
 
 def load_dataset(cfg):
-    data_loader = Loader()
+    data_loader = Loader(cfg)
     satorus_converter = Satorius2COCO()
     df = data_loader.load_static_dataset(filepath=cfg.DATASETS.TRAIN_STATIC_FILE)
     df = data_loader.preprocess_static_dataset(df)

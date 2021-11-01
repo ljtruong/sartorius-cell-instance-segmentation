@@ -11,6 +11,14 @@ class Loader:
     This implements the data loader for the satorus dataset.
     """
 
+    def __init__(self, cfg):
+        self.cfg = cfg
+
+        if os.path.isabs(cfg.DATASETS.DATA_DIR):
+            self.DATA_DIR = cfg.DATASETS.DATA_DIR
+        else:
+            self.DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data")
+
     def load_static_dataset(self, filepath: str) -> pd.DataFrame:
         """
         Load a static dataset from a csv file in the root data directory folder.
@@ -21,11 +29,7 @@ class Loader:
         Returns:
             pd.DataFrame: The dataframe containing the static dataset.
         """
-        df = pd.read_csv(
-            os.path.join(
-                os.path.dirname(os.path.dirname(os.path.dirname(__file__))), filepath
-            )
-        )
+        df = pd.read_csv(os.path.join(self.DATA_DIR, filepath))
         return df
 
     def preprocess_static_dataset(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -38,8 +42,7 @@ class Loader:
         Returns:
             pd.DataFrame: The preprocessed dataframe.
         """
-        ROOT = os.path.join(os.path.dirname(__file__), "..", "..", "data")
-        df["image_path"] = ROOT + "/train/" + df["id"] + ".png"
+        df["image_path"] = self.DATA_DIR + "/train/" + df["id"] + ".png"
         return df
 
     def _build_segmentation_annotations(

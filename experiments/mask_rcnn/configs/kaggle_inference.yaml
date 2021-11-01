@@ -1,6 +1,6 @@
 _BASE_: "../../../cell_segmentation/models/mask_rcnn/default_configs/Base-RCNN-FPN.yaml"
 MODEL:
-  WEIGHTS: "output/model_final.pth"
+  WEIGHTS: "../output/model_final.pth"
   MASK_ON: True
   RESNETS:
     DEPTH: 50
@@ -15,7 +15,7 @@ INPUT:
 DATASETS:
   TRAIN: ("train",)
   TEST: ("validation",)
-  TEST_DIR: "../../data/test"
+  TEST_DIR: "/kaggle/input/sartorius-cell-instance-segmentation/test"
 SOLVER:
   STEPS: (210000, 250000)
   MAX_ITER: 10

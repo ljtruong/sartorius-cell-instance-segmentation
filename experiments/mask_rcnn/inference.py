@@ -9,6 +9,7 @@ import pandas as pd
 from detectron2.engine import DefaultPredictor
 
 from cell_segmentation.data.models import MicroscopyImage
+from cell_segmentation.models.mask_rcnn.default_configs.config import CfgNode
 from cell_segmentation.utils.configs import load_config
 
 # TODO revise these constants
@@ -28,7 +29,7 @@ def rle_encode(img):
     return " ".join(str(x) for x in runs)
 
 
-def get_masks(image_path, predictor):
+def get_masks(image_path: str, predictor):
     im = cv2.imread(image_path)
     pred = predictor(im)
     pred_class = torch.mode(pred["instances"].pred_classes)[0]
@@ -45,12 +46,10 @@ def get_masks(image_path, predictor):
     return res
 
 
-def load_data(cfg) -> List[MicroscopyImage]:
+def load_data(cfg: CfgNode) -> List[MicroscopyImage]:
 
     microscopy_images = []
-    directory = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "..", "..", cfg.DATASETS.TEST_DIR
-    )
+    directory = os.path.join(cfg.DATASETS.TEST_DIR)
     for dirs, _, files in os.walk(directory):
         for file in files:
             if file.endswith(".png"):
@@ -69,17 +68,14 @@ def load_data(cfg) -> List[MicroscopyImage]:
     return microscopy_images
 
 
-def load_model(cfg):
+def load_model(cfg: CfgNode):
     return DefaultPredictor(cfg)
 
 
-def main(config):
+def main(config: str):
     cfg = load_config(config)
     cfg.MODEL.WEIGHTS = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        "..",
-        "..",
-        "models/baseline/model_final.pth",
+        os.path.dirname(os.path.abspath(__file__)), "..", "..", cfg.MODEL.WEIGHTS
     )
     microscopy_images = load_data(cfg)
     predictor = load_model(cfg)
