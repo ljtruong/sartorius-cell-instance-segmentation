@@ -106,6 +106,7 @@ _C.DATASETS.PRECOMPUTED_PROPOSAL_TOPK_TRAIN = 2000
 # List of the dataset names for testing. Must be registered in DatasetCatalog
 _C.DATASETS.TEST = ()
 _C.DATASETS.TEST_SPLIT = 0.2
+_C.DATASETS.TEST_DIR = "test"
 # List of the pre-computed proposal files for test, which must be consistent
 # with datasets listed in DATASETS.TEST.
 _C.DATASETS.PROPOSAL_FILES_TEST = ()
@@ -622,7 +623,7 @@ _C.OUTPUT_DIR = "./output"
 # Set seed to positive to use a fixed seed. Note that a fixed seed increases
 # reproducibility but does not guarantee fully deterministic behavior.
 # Disabling all parallelism further increases reproducibility.
-_C.SEED = -1
+_C.SEED = 42
 # Benchmark different cudnn algorithms.
 # If input images have very different sizes, this option will have large overhead
 # for about 10k iterations. It usually hurts total time, but can benefit for certain models.
