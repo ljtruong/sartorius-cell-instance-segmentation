@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 
@@ -43,6 +43,6 @@ class MicroscopyImage(Image):
     """
 
     file_id: str
-    annotations: List[Segmentation]
     image_path: str
-    mask_path: str
+    annotations: Optional[List[Segmentation]] = None
+    mask_path: str = None
