@@ -20,7 +20,10 @@ def load_dataset(cfg):
         df = df[: cfg.DATASETS.TRAIN_STATIC_FILE_ROWS]  # Debug purposes
 
     train_df, val_df = Datasets.generate_examples(
-        df, train_split=cfg.DATASETS.TRAIN_SPLIT, test_split=cfg.DATASETS.TEST_SPLIT
+        df,
+        seed=cfg.SEED,
+        train_split=cfg.DATASETS.TRAIN_SPLIT,
+        test_split=cfg.DATASETS.TEST_SPLIT,
     )
     train_dataset = data_loader.build_microscopyimage_from_dataframe(train_df)
     validation_dataset = data_loader.build_microscopyimage_from_dataframe(val_df)
@@ -42,7 +45,7 @@ def main(config: str, resume: bool):
 @click.option(
     "--config",
     type=str,
-    default="cell_segmentation/models/mask_rcnn/default_configs/mask_rcnn_R_50_FPN_3x.yaml",
+    default="experiments/mask_rcnn/configs/train.yaml",
 )
 @click.option(
     "--resume",
