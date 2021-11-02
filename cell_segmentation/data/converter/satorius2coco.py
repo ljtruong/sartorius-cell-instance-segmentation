@@ -1,11 +1,11 @@
 import json
 import multiprocessing as mp
 import os
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
-import numpy as np
 from detectron2.data import DatasetCatalog, MetadataCatalog
 from detectron2.structures import BoxMode
+
 from cell_segmentation.data.models import MicroscopyImage
 
 
