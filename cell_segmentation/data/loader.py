@@ -1,5 +1,6 @@
 import os
 from typing import List
+import multiprocessing as mp
 
 import pandas as pd
 
@@ -36,9 +37,12 @@ class Loader:
         Load a static dataset from a csv file in the root data directory folder.
 
         Parameters:
-            filepath (str): The path to the csv file.
+        -----------
+            filepath: str
+                The path to the csv file.
 
         Returns:
+        -----------
             pd.DataFrame: The dataframe containing the static dataset.
         """
         df = pd.read_csv(os.path.join(self.DATA_DIR, filepath))
@@ -49,9 +53,12 @@ class Loader:
         Preprcess the static dataset.
 
         Parameters:
-            df (pd.DataFrame): The dataframe containing the static dataset.
+        -----------
+            df: pd.DataFrame
+                The dataframe containing the static dataset.
 
         Returns:
+        -----------
             pd.DataFrame: The preprocessed dataframe.
         """
         df["image_path"] = self.DATA_DIR + "/train/" + df["id"] + ".png"
@@ -64,9 +71,18 @@ class Loader:
         Build segmentation annotations from a dataframe into Segmentation data model.
 
         Parameters:
-            annotations (pd.DataFrame): The dataframe containing the annotations.
+        -----------
+            segmentation: List[str]
+                the segmentation annotations.
+            label: str
+                the label of the cell type.
+            height: int
+                the height of the image.
+            width: int
+                the width of the image.
 
         Returns:
+        -----------
             Segmentation: The segmentation annotations.
         """
         return Segmentation(
@@ -94,6 +110,46 @@ class Loader:
             height=bbox[3],
         )
 
+    def build_single_annotation(
+        self,
+        annotation: List[str],
+        cell_type: str,
+        height: int,
+        width: int,
+    ) -> Annotations:
+        """
+        Build a single annotation into Annotations data model.
+
+        Parameters:
+        ----------
+            annotation: List[str]
+                the segmentation annotations.
+            cell_type: str
+                the label of the cell type.
+            height: int
+                the height of the image.
+            width: int
+                the width of the image.
+
+        Returns:
+        ----------
+            Annotations: The annotation storing segmentation and bbox.
+        """
+
+        segmentation, bbox = decode_rle(get_mask_rle(annotation, height, width))
+        if validate_segmentation_length(segmentation) and validate_bbox(
+            bbox, height, width
+        ):
+            return Annotations(
+                segmentation=self._build_segmentation_annotations(
+                    segmentation=segmentation,
+                    label=cell_type,
+                    height=height,
+                    width=width,
+                ),
+                bbox=self._build_bbox_annotations(bbox=bbox),
+            )
+
     def _build_annotations(self, annotations: pd.DataFrame) -> List[Annotations]:
         """
         Build annotations from a dataframe into Annotations data model.
@@ -106,25 +162,12 @@ class Loader:
         ----------
             List[Annotations]: The annotations.
         """
-        annotation_list = []
-        for ix, row in enumerate(annotations.itertuples()):
-            segmentation, bbox = decode_rle(
-                get_mask_rle(row.annotation, row.height, row.width)
+        num_processes = 4
+        with mp.Pool(num_processes) as pool:
+            return pool.starmap(
+                self.build_single_annotation,
+                annotations.itertuples(name=None, index=False),
             )
-            if validate_segmentation_length(segmentation) and validate_bbox(
-                bbox, row.height, row.width
-            ):
-                annotation = Annotations(
-                    segmentation=self._build_segmentation_annotations(
-                        segmentation=segmentation,
-                        label=row.cell_type,
-                        height=row.height,
-                        width=row.width,
-                    ),
-                    bbox=self._build_bbox_annotations(bbox=bbox),
-                )
-                annotation_list.append(annotation)
-        return annotation_list
 
     def build_microscopyimage_from_dataframe(
         self, df: pd.DataFrame
