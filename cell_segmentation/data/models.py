@@ -7,6 +7,16 @@ import cv2
 
 @dataclass
 class BBox:
+    """
+    Bounding box data model.
+
+    Attributes:
+        xmin: x coordinate of the top left corner of the bounding box.
+        ymin: y coordinate of the top left corner of the bounding box.
+        width: width of the bounding box.
+        height: height of the bounding box.
+    """
+
     xmin: float
     ymin: float
     width: float
@@ -29,16 +39,38 @@ class BBox:
 
 @dataclass
 class Image:
+    """
+    Image data model
+
+    Attributes:
+        image_path: Path to image file.
+        width: Image width.
+        height: Image height.
+    """
+
     image_path: str
     height: int
     width: int
 
     def array(self) -> np.ndarray:
+        """
+        Read image as numpy array.
+        """
         return cv2.imread(self.image_path)
 
 
 @dataclass
 class Segmentation:
+    """
+    Segmentation data model.
+
+    Attributes:
+        annotation: List of segmentation polygons.
+        label: Label of the segmented cell type.
+        area: Area of the segmentation.
+
+    """
+
     annotation: List[int]
     label: str
     area: int
@@ -46,6 +78,14 @@ class Segmentation:
 
 @dataclass
 class Annotations:
+    """
+    Annotations data model.
+
+    Attributes:
+        segmentations: List of segmentations.
+        bbox: Bounding box.
+    """
+
     segmentation: Optional[List[Segmentation]]
     bbox: Optional[BBox] = None
 
@@ -58,8 +98,6 @@ class MicroscopyImage(Image):
     Attributes:
         file_id: unique file name of image
         annotations: list of Segmentation annotations
-        image_path: path to image file
-        mask_path: path to mask file
     """
 
     file_id: str
