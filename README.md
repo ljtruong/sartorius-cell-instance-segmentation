@@ -8,12 +8,18 @@ The aim for this competition is to detect and delineate distinct objects of inte
 
 [Link to competition](https://www.kaggle.com/c/sartorius-cell-instance-segmentation)
 
+
+
 ## Metric
-mean average precision at different intersection over union (IoU) thresholds. Essentially the better the model is able to detect the segmentation area over the groundtruth the better the precision.    
+mean average precision at different intersection over union (IoU) thresholds. Essentially the better the model is able to detect the segmentation area over the groundtruth the better the precision. 
 
+## Contents
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
 
-# Installation
-## Requirements
+## Installation
+### Requirements
 - CUDA
 - detectron2
 - pytorch==1.10
@@ -21,7 +27,7 @@ mean average precision at different intersection over union (IoU) thresholds. Es
 pip install -e .
 ```
 
-# Getting started
+## Getting started
 1. Data setup
 ```
 kaggle competitions download -c sartorius-cell-instance-segmentation
@@ -32,7 +38,22 @@ kaggle competitions download -c sartorius-cell-instance-segmentation
 python experiments/mask_rcnn/train.py
 ```
 
-# TODO Checklist
+## Project Structure
+```
+
+sartorius-cell-instance-segmentation
+├── cell_segmentation       # cell_segmentation library.
+|   ├── data                # data loading, transforms etc.
+|   ├── models              # model templates, specifically utilising and sourcing well known libraries.
+|   └── utils               # useful scripts for visualisation and any useful transforms.
+├── data                    # data directory where sartorius data is extracted to.
+├── experiments             # model experiments.
+├── notebooks               # Example, usage and exploration notebooks.
+└── tests                   # Unit tests.
+
+```
+
+## TODO Checklist
 - [x] Structure dataset
 - [ ] Data exploration
 - [x] Baseline results on one epoch
