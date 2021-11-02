@@ -6,6 +6,8 @@ Current solutions have limited accuracy for neuronal cells in particular. In int
 
 The aim for this competition is to detect and delineate distinct objects of interest, the neuronal cell types. 
 
+[Link to competition](https://www.kaggle.com/c/sartorius-cell-instance-segmentation)
+
 ## Metric
 mean average precision at different intersection over union (IoU) thresholds. Essentially the better the model is able to detect the segmentation area over the groundtruth the better the precision.    
 
@@ -33,11 +35,13 @@ python experiments/mask_rcnn/train.py
 # TODO Checklist
 - [x] Structure dataset
 - [ ] Data exploration
-- [ ] Baseline results on one epoch
+- [x] Baseline results on one epoch
 - [x] Custom configuration
 - [x] Training
 - [x] Evaluation
-- [ ] Submission output
+- [x] Submission output
+- [ ] Resolve submission issue
+- [ ] Package up python packages for submission
 - [ ] Feature Engineering
 - [ ] Augmentation
 - [ ] Cross Validation
