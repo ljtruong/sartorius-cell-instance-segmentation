@@ -1,6 +1,3 @@
-import os
-
-from detectron2.config import get_cfg
 import click
 
 from cell_segmentation.data.converter.satorius2coco import Satorius2COCO
