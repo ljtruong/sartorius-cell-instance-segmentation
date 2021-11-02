@@ -15,7 +15,7 @@ INPUT:
 DATASETS:
   TRAIN: ("train",)
   TEST: ("validation",)
-  TEST_DIR: "../../data/test"
+  TEST_DIR: "data/test"
 SOLVER:
   STEPS: (210000, 250000)
   MAX_ITER: 10

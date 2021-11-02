@@ -49,8 +49,7 @@ def get_masks(image_path: str, predictor):
 def load_data(cfg: CfgNode) -> List[MicroscopyImage]:
 
     microscopy_images = []
-    directory = os.path.join(cfg.DATASETS.TEST_DIR)
-    for dirs, _, files in os.walk(directory):
+    for dirs, _, files in os.walk(cfg.DATASETS.TEST_DIR):
         for file in files:
             if file.endswith(".png"):
                 image_path = os.path.join(dirs, file)
@@ -61,7 +60,6 @@ def load_data(cfg: CfgNode) -> List[MicroscopyImage]:
                     image_path=image_path,
                     height=None,
                     width=None,
-                    array=None,
                 )
 
                 microscopy_images.append(microscopy_image)
@@ -80,7 +78,7 @@ def main(config: str):
     microscopy_images = load_data(cfg)
     predictor = load_model(cfg)
 
-    submission = pd.DataFrame(columns=["ids", "predicted"])
+    submission = pd.DataFrame(columns=["id", "predicted"])
     for microscopy_image in microscopy_images:
         encoded_masks = get_masks(microscopy_image.image_path, predictor)
         for enc in encoded_masks:
