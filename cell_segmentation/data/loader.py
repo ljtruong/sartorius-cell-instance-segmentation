@@ -22,6 +22,15 @@ from cell_segmentation.data.models import (
 class Loader:
     """
     This implements the data loader for the satorus dataset.
+
+    Usage:
+    ----------
+    from cell_segmentation.data.loader import Loader
+    data_loader = Loader(cfg)
+    train_df = data_loader.load_static_dataset("train.csv")
+    train_df = data_loader.preprocess_static_dataset(train_df)
+    train_df = data_loader.build_microscopyimage_from_dataframe(train_df)
+
     """
 
     def __init__(self, cfg):
@@ -150,7 +159,9 @@ class Loader:
                 bbox=self._build_bbox_annotations(bbox=bbox),
             )
 
-    def _build_annotations(self, annotations: pd.DataFrame) -> List[Annotations]:
+    def _build_annotations(
+        self, annotations: pd.DataFrame, num_processes=os.cpu_count()
+    ) -> List[Annotations]:
         """
         Build annotations from a dataframe into Annotations data model.
 
@@ -162,7 +173,6 @@ class Loader:
         ----------
             List[Annotations]: The annotations.
         """
-        num_processes = 4
         with mp.Pool(num_processes) as pool:
             return pool.starmap(
                 self.build_single_annotation,
@@ -170,7 +180,7 @@ class Loader:
             )
 
     def build_microscopyimage_from_dataframe(
-        self, df: pd.DataFrame
+        self, df: pd.DataFrame, num_processes: int = os.cpu_count()
     ) -> List[MicroscopyImage]:
         """
         Build microscopy images from a dataframe into MicroscopyImage data model.
@@ -188,7 +198,8 @@ class Loader:
             microscopyimage = MicroscopyImage(
                 file_id=image_id,
                 annotations=self._build_annotations(
-                    subset[["annotation", "cell_type", "height", "width"]]
+                    subset[["annotation", "cell_type", "height", "width"]],
+                    num_processes=num_processes,
                 ),
                 image_path=subset["image_path"].values[0],
                 height=subset["height"].values[0],
