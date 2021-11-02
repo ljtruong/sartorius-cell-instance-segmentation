@@ -6,9 +6,6 @@ from typing import Dict, List, Tuple
 import numpy as np
 from detectron2.data import DatasetCatalog, MetadataCatalog
 from detectron2.structures import BoxMode
-from pycocotools import mask as mutils
-from skimage import measure
-
 from cell_segmentation.data.models import MicroscopyImage
 
 
@@ -53,89 +50,9 @@ class Satorius2COCO:
             "bbox": [],
             "bbox_mode": BoxMode.XYWH_ABS,
             "segmentation": [],
+            "area": 0,
             "category_id": 0,
         }
-
-    def rle_decode(
-        self, mask_rle: List[int], shape: Tuple[int, int, int], color: int = 1
-    ) -> np.ndarray:
-        """
-        Convert RLE encoded mask to numpy array.
-
-        source: https://www.kaggle.com/ammarnassanalhajali/sartorius-segmentation-detectron2-training#Loading-Dataset
-
-        Parameters:
-            mask_rle (List[int]): RLE encoded pixels
-            shape (Tuple[int, int, int]): shape of image
-            color (int): color of mask
-
-        Returns:
-            mask (np.ndarray): pixel segmentation mask
-        """
-        s = mask_rle.split()
-
-        starts = list(map(lambda x: int(x) - 1, s[0::2]))
-        lengths = list(map(int, s[1::2]))
-
-        ends = [x + y for x, y in zip(starts, lengths)]
-        img = np.zeros((shape[0] * shape[1], shape[2]), dtype=np.float32)
-
-        for start, end in zip(starts, ends):
-            img[start:end] = color
-
-        return img.reshape(shape)
-
-    def get_mask_rle(
-        self, ann: List[int], image_height: int, image_width: int, channels: int = 1
-    ) -> np.ndarray:
-        """
-        Convert annotation run length encoded(RLE) pixels to pixel mask.
-
-        Run-length encoding(RLE) is a form of lossless data compression.
-
-        source: https://www.kaggle.com/ammarnassanalhajali/sartorius-segmentation-detectron2-training#Loading-Dataset
-
-        Parameters:
-            ann (List[int]): RLE encoded pixels
-            image_height (int): height of image
-            image_width (int): width of image
-            channels (int): number of channels
-
-        Returns:
-            mask (np.ndarray): pixel segmentation mask
-        """
-        decoded_mask = self.rle_decode(
-            ann, shape=(image_height, image_width, channels), color=1
-        )
-        mask = decoded_mask[:, :, 0]
-        mask = np.array(mask, dtype=np.uint8)
-        return mask
-
-    def decode_rle(self, mask_rle: np.ndarray):
-        """
-        Convert RLE encoded mask to numpy array and extract bounding box of mask.
-
-        source: https://www.kaggle.com/ammarnassanalhajali/sartorius-segmentation-detectron2-training#Loading-Dataset
-
-        Parameters:
-            mask_rle (List[int]): RLE encoded pixels
-
-        Returns:
-            mask (np.ndarray): pixel segmentation mask
-            bbox (List[int]): bounding box of mask
-        """
-        ground_truth_binary_mask = mask_rle
-        fortran_ground_truth_binary_mask = np.asfortranarray(ground_truth_binary_mask)
-        encoded_ground_truth = mutils.encode(fortran_ground_truth_binary_mask)
-        ground_truth_bounding_box = mutils.toBbox(encoded_ground_truth)
-        contours = measure.find_contours(ground_truth_binary_mask, 0.5)
-
-        segmentations = []
-        for contour in contours:
-            contour = np.flip(contour, axis=1)
-            segmentations.append(contour.ravel().tolist())
-
-        return segmentations, ground_truth_bounding_box.tolist()
 
     def _get_annotations(self, data: List[Dict]) -> Dict:
         """
@@ -149,13 +66,11 @@ class Satorius2COCO:
         """
         objs = []
         for ann in data.annotations:
-            segmenation, bbox = self.decode_rle(
-                self.get_mask_rle(ann.annotation, data.height, data.width)
-            )
             obj = self._ann_structure()
-            obj["bbox"] = bbox
-            obj["segmentation"] = segmenation
-            obj["category_id"] = self._string2int[ann.label]
+            obj["bbox"] = ann.bbox.to_row()
+            obj["segmentation"] = ann.segmentation.annotation
+            obj["category_id"] = self._string2int[ann.segmentation.label]
+            obj["area"] = ann.segmentation.area
             objs.append(obj)
         return objs
 

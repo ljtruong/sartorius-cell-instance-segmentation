@@ -3,7 +3,19 @@ from typing import List
 
 import pandas as pd
 
-from cell_segmentation.data.models import MicroscopyImage, Segmentation
+from cell_segmentation.utils.rle_parser import (
+    get_mask_rle,
+    decode_rle,
+    validate_segmentation_length,
+    validate_bbox,
+    get_segmentation_area,
+)
+from cell_segmentation.data.models import (
+    MicroscopyImage,
+    Segmentation,
+    Annotations,
+    BBox,
+)
 
 
 class Loader:
@@ -46,7 +58,7 @@ class Loader:
         return df
 
     def _build_segmentation_annotations(
-        self, annotations: pd.DataFrame
+        self, segmentation: List[str], label: str, height: int, width: int
     ) -> Segmentation:
         """
         Build segmentation annotations from a dataframe into Segmentation data model.
@@ -57,12 +69,62 @@ class Loader:
         Returns:
             Segmentation: The segmentation annotations.
         """
-        segmentation_annotations = []
+        return Segmentation(
+            annotation=segmentation,
+            label=label,
+            area=get_segmentation_area(segmentation, height, width),
+        )
+
+    def _build_bbox_annotations(self, bbox: List[int]) -> BBox:
+        """
+        Build bbox annotations from a dataframe into BBox data model.
+
+        Parameters:
+        ----------
+            bbox (List[int]): The bounding box coordinates.
+
+        Returns:
+        ----------
+            BBox: The bbox annotations.
+        """
+        return BBox(
+            xmin=bbox[0],
+            ymin=bbox[1],
+            width=bbox[2],
+            height=bbox[3],
+        )
+
+    def _build_annotations(self, annotations: pd.DataFrame) -> List[Annotations]:
+        """
+        Build annotations from a dataframe into Annotations data model.
+
+        Parameters:
+        ----------
+            annotations (pd.DataFrame): The dataframe containing the annotations.
+
+        Returns:
+        ----------
+            List[Annotations]: The annotations.
+        """
+        annotation_list = []
         for ix, row in enumerate(annotations.itertuples()):
-            segmentation_annotations.append(
-                Segmentation(annotation=row.annotation, label=row.cell_type)
+            segmentation, bbox = decode_rle(
+                get_mask_rle(row.annotation, row.height, row.width)
             )
-        return segmentation_annotations
+            if validate_segmentation_length(segmentation) and validate_bbox(
+                bbox, row.height, row.width
+            ):
+                annotation = Annotations(
+                    segmentation=self._build_segmentation_annotations(
+                        segmentation=segmentation,
+                        label=row.cell_type,
+                        height=row.height,
+                        width=row.width,
+                    ),
+                    bbox=self._build_bbox_annotations(bbox=bbox),
+                )
+                annotation_list.append(annotation)
+        return annotation_list
 
     def build_microscopyimage_from_dataframe(
         self, df: pd.DataFrame
@@ -82,12 +144,10 @@ class Loader:
         for image_id, subset in grouped:
             microscopyimage = MicroscopyImage(
                 file_id=image_id,
-                annotations=self._build_segmentation_annotations(
-                    subset[["annotation", "cell_type"]]
+                annotations=self._build_annotations(
+                    subset[["annotation", "cell_type", "height", "width"]]
                 ),
                 image_path=subset["image_path"].values[0],
-                mask_path=None,
-                array=None,
                 height=subset["height"].values[0],
                 width=subset["width"].values[0],
             )
