@@ -14,13 +14,13 @@ class GenerateStatistics:
 
         Parameters
         ----------
-        df : pd.DataFrame
-            The dataframe to generate statistics for.
+            df : pd.DataFrame
+                The dataframe to generate statistics for.
 
         Returns
         -------
-        pd.DataFrame
-            The dataframe with statistics.
+            pd.DataFrame
+                The dataframe with statistics.
         """
         # Get the statistics
         numeric_statistics = df[numeric_columns].describe()
