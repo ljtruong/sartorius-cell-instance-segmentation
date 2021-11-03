@@ -10,7 +10,7 @@ from detectron2.utils.logger import setup_logger
 
 def load_dataset(cfg):
     data_loader = Loader(cfg)
-    satorus_converter = Satorius2COCO()
+    satorius_converter = Satorius2COCO()
     df = data_loader.load_static_dataset(filepath=cfg.DATASETS.TRAIN_STATIC_FILE)
     df = data_loader.preprocess_static_dataset(df)
 
@@ -26,8 +26,8 @@ def load_dataset(cfg):
     train_dataset = data_loader.build_microscopyimage_from_dataframe(train_df)
     validation_dataset = data_loader.build_microscopyimage_from_dataframe(val_df)
 
-    satorus_converter.register_instances("train", train_dataset)
-    satorus_converter.register_instances("validation", validation_dataset)
+    satorius_converter.register_instances("train", train_dataset)
+    satorius_converter.register_instances("validation", validation_dataset)
 
 
 def main(config: str, resume: bool):
