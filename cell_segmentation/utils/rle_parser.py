@@ -13,12 +13,22 @@ def rle_decode(
     source: https://www.kaggle.com/ammarnassanalhajali/sartorius-segmentation-detectron2-training#Loading-Dataset
 
     Parameters:
-        mask_rle (List[int]): RLE encoded pixels
-        shape (Tuple[int, int, int]): shape of image
-        color (int): color of mask
+    -----------
+    mask_rle: List[int]
+        RLE encoded pixels
+    height: int
+        height of image
+    width: int
+        width of image
+    channels: int
+        number of channels
+    color: int
+        color of mask
 
     Returns:
-        mask (np.ndarray): pixel segmentation mask
+    -----------
+    mask: np.ndarray
+        pixel segmentation mask
     """
     s = mask_rle.split()
 
@@ -50,13 +60,20 @@ def get_mask_rle(
     source: https://www.kaggle.com/ammarnassanalhajali/sartorius-segmentation-detectron2-training#Loading-Dataset
 
     Parameters:
-        ann (List[int]): RLE encoded pixels
-        image_height (int): height of image
-        image_width (int): width of image
-        channels (int): number of channels
+    -----------
+    ann: List[int]
+        annotation of mask
+    image_height: int
+        height of image
+    image_width: int
+        width of image
+    channels: int
+        number of channels
 
     Returns:
-        mask (np.ndarray): pixel segmentation mask
+    -----------
+    mask: np.ndarray
+        pixel segmentation mask
     """
     decoded_mask = rle_decode(
         ann, height=image_height, width=image_width, channels=channels, color=1
