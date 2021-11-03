@@ -11,7 +11,7 @@ from cell_segmentation.utils.configs import load_config
 
 def load_dataset(cfg):
     data_loader = Loader(cfg)
-    satorus_converter = Satorius2COCO()
+    satorius_converter = Satorius2COCO()
     df = data_loader.load_static_dataset(filepath=cfg.DATASETS.TRAIN_STATIC_FILE)
     df = data_loader.preprocess_static_dataset(df)
 
@@ -27,16 +27,20 @@ def load_dataset(cfg):
     train_dataset = data_loader.build_microscopyimage_from_dataframe(train_df)
     validation_dataset = data_loader.build_microscopyimage_from_dataframe(val_df)
 
-    satorus_converter.register_instances("train", train_dataset)
-    satorus_converter.register_instances("validation", validation_dataset)
+    satorius_converter.register_instances("train", train_dataset)
+    satorius_converter.register_instances("validation", validation_dataset)
 
 
 def main(config: str, resume: bool):
     cfg = load_config(config)
-    load_dataset()
+    load_dataset(cfg)
 
     evaluator = COCOEvaluator(
-        cfg.DATASETS.TEST[0], cfg, False, output_dir=cfg.OUTPUT_DIR
+        dataset_name=cfg.DATASETS.TEST[0],
+        tasks=("segm",),
+        distributed=False,
+        max_dets_per_image=cfg.TEST.DETECTIONS_PER_IMAGE,
+        output_dir=cfg.OUTPUT_DIR,
     )
     val_loader = build_detection_test_loader(cfg, cfg.DATASETS.TEST)
     trainer = SartoriusTrainer(cfg)

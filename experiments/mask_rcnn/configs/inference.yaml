@@ -13,8 +13,11 @@ TEST:
 INPUT:
   MASK_FORMAT: bitmask
 DATASETS:
+  DATA_DIR: data
   TRAIN: ("train",)
   TEST: ("validation",)
+  TRAIN_STATIC_FILE: train.csv
+  TRAIN_STATIC_FILE_ROWS: null
   TEST_DIR: "data/test"
 SOLVER:
   STEPS: (210000, 250000)
