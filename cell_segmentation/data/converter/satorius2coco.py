@@ -22,10 +22,14 @@ class Satorius2COCO:
     def load_class_mapping(self, filepath: str) -> Dict:
         """
         Parameters:
-            filepath (str): path to class mapping json file
+        ----------
+            filepath: str
+                path to class mapping json file
 
         Returns:
-            class_mapping (dict): dictionary of class mapping
+        ----------
+            class_mapping: dict
+                dictionary of class mapping
         """
 
         relative_filepath = os.path.join(
@@ -59,19 +63,24 @@ class Satorius2COCO:
         Convert data model to COCO annotation format.
 
         Parameters:
-            data (List[Dict]): Segmentation annotations
+        ----------
+            data: List[Dict])
+                Segmentation annotations
 
         Returns:
-            annotations (Dict): COCO annotation format
+        ----------
+            annotations: Dict
+                COCO annotation format
         """
         objs = []
         for ann in data.annotations:
-            obj = self._ann_structure()
-            obj["bbox"] = ann.bbox.to_row()
-            obj["segmentation"] = ann.segmentation.annotation
-            obj["category_id"] = self._string2int[ann.segmentation.label]
-            obj["area"] = ann.segmentation.area
-            objs.append(obj)
+            if ann:
+                obj = self._ann_structure()
+                obj["bbox"] = ann.bbox.to_row()
+                obj["segmentation"] = ann.segmentation.annotation
+                obj["category_id"] = self._string2int[ann.segmentation.label]
+                obj["area"] = ann.segmentation.area
+                objs.append(obj)
         return objs
 
     def get_record(self, data: MicroscopyImage) -> Dict:
@@ -79,10 +88,14 @@ class Satorius2COCO:
         Convert MicroscopyImage model to COCO format.
 
         Parameters:
-            data (MicroscopyImage): MicroscopyImage model
+        ----------
+            data: MicroscopyImage
+                MicroscopyImage model
 
         Returns:
-            record (Dict): COCO format
+        ----------
+            record: Dict
+                COCO format
         """
         record = self._record_structure()
         record["file_name"] = data.image_path
@@ -97,11 +110,15 @@ class Satorius2COCO:
     ) -> List[Dict]:
         """
         Parameters:
-            data (List[MicroscopyImage]): MicroscopyImage model
-            num_processes (int): number of processes
+        ----------
+            data: List[MicroscopyImage]
+                MicroscopyImage model
+            num_processes: int
+                number of processes
 
         Returns:
-            dataset (List[Dict]): COCO format
+            dataset: List[Dict]
+                COCO format
         """
         with mp.Pool(num_processes) as pool:
             return pool.starmap(self.get_record, zip(data))
@@ -111,8 +128,11 @@ class Satorius2COCO:
         Register dataset in detectron data catalog.
 
         Parameters:
-            name (str): name of dataset
-            data (List[Dict]): COCO format
+        ----------
+            name: str
+                name of dataset
+            data: List[Dict]
+                COCO format
         """
         DatasetCatalog.register(name, lambda: self.get_dataset(data))
         MetadataCatalog.get(name).set(thing_classes=list(self._string2int.keys()))
