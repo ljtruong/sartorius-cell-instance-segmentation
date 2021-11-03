@@ -14,21 +14,21 @@ def rle_decode(
 
     Parameters:
     -----------
-    mask_rle: List[int]
-        RLE encoded pixels
-    height: int
-        height of image
-    width: int
-        width of image
-    channels: int
-        number of channels
-    color: int
-        color of mask
+        mask_rle: List[int]
+            RLE encoded pixels
+        height: int
+            height of image
+        width: int
+            width of image
+        channels: int
+            number of channels
+        color: int
+            color of mask
 
     Returns:
     -----------
-    mask: np.ndarray
-        pixel segmentation mask
+        mask: np.ndarray
+            pixel segmentation mask
     """
     s = mask_rle.split()
 
@@ -61,19 +61,19 @@ def get_mask_rle(
 
     Parameters:
     -----------
-    ann: List[int]
-        annotation of mask
-    image_height: int
-        height of image
-    image_width: int
-        width of image
-    channels: int
-        number of channels
+        ann: List[int]
+            annotation of mask
+        image_height: int
+            height of image
+        image_width: int
+            width of image
+        channels: int
+            number of channels
 
     Returns:
     -----------
-    mask: np.ndarray
-        pixel segmentation mask
+        mask: np.ndarray
+            pixel segmentation mask
     """
     decoded_mask = rle_decode(
         ann, height=image_height, width=image_width, channels=channels, color=1
@@ -97,17 +97,17 @@ def validate_bbox(bbox: List[int], image_height: int, image_width: int) -> bool:
 
     Parameters:
     -----------
-    bbox: List[int]
-        bounding box of mask
-    image_height: int
-        height of image
-    image_width: int
-        width of image
+        bbox: List[int]
+            bounding box of mask
+        image_height: int
+            height of image
+        image_width: int
+            width of image
 
     Returns:
     --------
-    valid_annotation: bool
-        True if bounding box is inside the image, False otherwise
+        valid_annotation: bool
+            True if bounding box is inside the image, False otherwise
     """
     valid_annotation = True
     if (
@@ -126,13 +126,13 @@ def validate_segmentation_length(segmentations: List[int]) -> bool:
 
     Parameters:
     -----------
-    segmentations: List[int]
-        segmentation of mask
+        segmentations: List[int]
+            segmentation of mask
 
     Returns:
     --------
-    valid_annotation: bool
-        True if length of segmentation is greater than 7, False otherwise
+        valid_annotation: bool
+            True if length of segmentation is greater than 7, False otherwise
     """
     valid_annotation = True
 

@@ -25,11 +25,11 @@ class Loader:
 
     Usage:
     ----------
-    from cell_segmentation.data.loader import Loader
-    data_loader = Loader(cfg)
-    train_df = data_loader.load_static_dataset("train.csv")
-    train_df = data_loader.preprocess_static_dataset(train_df)
-    train_df = data_loader.build_microscopyimage_from_dataframe(train_df)
+        from cell_segmentation.data.loader import Loader
+        data_loader = Loader(cfg)
+        train_df = data_loader.load_static_dataset("train.csv")
+        train_df = data_loader.preprocess_static_dataset(train_df)
+        train_df = data_loader.build_microscopyimage_from_dataframe(train_df)
 
     """
 
